@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DidiFit - Acompanhamento de Treinos</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/assets/manifest-B1JAlF-P.json">
+    
+    <!-- Theme Color for browsers -->
+    <meta name="theme-color" content="#317EFB">
+    
+    <!-- Apple PWA specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"> <!-- Puedes usar 'black' o 'black-translucent' también -->
+    <meta name="apple-mobile-web-app-title" content="DidiFit">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png"> <!-- e.g., 180x180px -->
+
+    <!-- Favicon (existing) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️</text></svg>">
+
+
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.3.0"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-BYj8w1HT.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BRu9fnrw.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="logo-title">
+                <span role="img" aria-label="dumbbell icon" class="header-icon">🏋️</span>
+                <h1>DidiFit</h1>
+            </div>
+            <button id="theme-toggle" aria-label="Alternar tema">
+                <span class="icon-moon">🌙</span>
+                <span class="icon-sun">☀️</span>
+            </button>
+        </header>
+        <main>
+            <section id="schedule-view" aria-labelledby="schedule-heading">
+                <h2 id="schedule-heading">Agenda Semanal</h2>
+                <p>Configure seus dias de treino e os grupos musculares para cada um. Clique no ícone ✏️ para editar um dia.</p>
+                <div class="days-container">
+                    <!-- Days will be rendered here by JavaScript -->
+                </div>
+            </section>
+
+            <div class="content-split">
+                <section id="workout-details-view" aria-labelledby="details-heading">
+                    <h2 id="details-heading">Detalhes do Treino do Dia</h2>
+                    <div id="selected-day-info-container">
+                        <p id="selected-day-info">Selecione um dia na agenda para ver ou editar os exercícios.</p>
+                    </div>
+                    <div id="exercise-list-container">
+                        <!-- Exercise templates will be rendered here -->
+                    </div>
+                    <div class="actions-container">
+                        <button id="add-exercise-to-template-btn" class="button-primary" style="display:none;">Adicionar Exercício ao Modelo</button>
+                        <button id="log-workout-btn" class="button-accent" style="display:none;">Registrar Treino Realizado</button>
+                    </div>
+                </section>
+
+                <section id="log-workout-form-view" style="display:none;" aria-labelledby="log-form-heading">
+                    <h2 id="log-form-heading">Registrar Treino</h2>
+                    <form id="workout-log-form">
+                        <div id="log-form-exercises-container">
+                            <!-- 6 Exercise logging slots will be dynamically inserted here -->
+                        </div>
+                        <div class="form-group">
+                            <label for="workout-notes">Notas do Treino:</label>
+                            <textarea id="workout-notes" name="workout-notes" rows="3" placeholder="Ex: Senti dor no ombro, aumentar carga na próxima..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="button-primary">Salvar Treino</button>
+                            <button type="button" id="cancel-log-workout-btn" class="button-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+            <section id="history-view" aria-labelledby="history-heading">
+                <h2 id="history-heading">Histórico de Treinos</h2>
+                <div id="last-workouts-container">
+                    <p>Nenhum treino registrado ainda.</p>
+                </div>
+                <!-- Placeholder for evolution chart -->
+                <div id="evolution-chart-container" style="display: none;">
+                    <h3>Evolução da Carga (Em breve)</h3>
+                </div>
+            </section>
+
+            <section id="body-measurements-view" aria-labelledby="body-measurements-heading">
+                <h2 id="body-measurements-heading">Minhas Medidas</h2>
+                <div class="actions-container">
+                    <button id="add-body-measurement-btn" class="button-primary">Registrar Novas Medidas</button>
+                </div>
+                <div id="body-measurements-history-container">
+                    <p>Nenhuma medida corporal registrada ainda.</p>
+                </div>
+            </section>
+        </main>
+        <button id="fab-add-workout" class="fab" aria-label="Registrar Treino para Hoje" title="Registrar Treino para Hoje">
+            <span role="img" aria-hidden="true">+</span>
+        </button>
+    </div>
+
+    <!-- Modal for Editing Day Configuration -->
+    <div id="edit-day-modal" class="modal" style="display:none;" aria-labelledby="edit-day-modal-title" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <h3 id="edit-day-modal-title">Editar Dia: <span id="edit-day-modal-dayname"></span></h3>
+            <form id="edit-day-form">
+                <input type="hidden" id="edit-day-modal-daykey">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="edit-day-is-workout"> Dia de Treino
+                    </label>
+                </div>
+                <div id="edit-day-muscle-groups-container" class="form-group" style="display:none;">
+                    <label for="edit-day-muscle-groups-list">Grupos Musculares do Dia (selecione um ou mais):</label>
+                    <div id="edit-day-muscle-groups-list" role="group" aria-label="Grupos Musculares do Dia">
+                        <!-- Checkboxes for muscle groups will be populated here -->
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button-primary">Salvar Alterações</button>
+                    <button type="button" id="cancel-edit-day-modal-btn" class="button-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Exercise to Template -->
+    <div id="add-exercise-modal" class="modal" style="display:none;" aria-labelledby="add-exercise-modal-title" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <h3 id="add-exercise-modal-title">Adicionar Exercício ao Modelo de Treino</h3>
+            <form id="add-exercise-form">
+                <div class="form-group">
+                    <label for="add-exercise-category-select">Categoria de Exercício:</label>
+                    <select id="add-exercise-category-select" name="add-exercise-category" required>
+                        <option value="">-- Selecione a Categoria --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="add-exercise-item-select">Exercício:</label>
+                    <select id="add-exercise-item-select" name="add-exercise-item" required disabled>
+                        <option value="">-- Selecione o Exercício --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="add-exercise-default-load">Carga Padrão (kg):</label>
+                    <input type="number" id="add-exercise-default-load" name="add-exercise-default-load" value="0" step="0.25" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-exercise-default-sets">Séries Padrão:</label>
+                    <input type="number" id="add-exercise-default-sets" name="add-exercise-default-sets" value="3" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-exercise-default-reps">Repetições Padrão:</label>
+                    <input type="text" id="add-exercise-default-reps" name="add-exercise-default-reps" value="10" placeholder="Ex: 8-12, 60s" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button-primary">Adicionar ao Modelo</button>
+                    <button type="button" id="cancel-add-exercise-modal-btn" class="button-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Body Measurements -->
+    <div id="body-measurement-modal" class="modal" style="display:none;" aria-labelledby="body-measurement-modal-title" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <h3 id="body-measurement-modal-title">Registrar Medidas Corporais</h3>
+            <form id="body-measurement-form">
+                <input type="hidden" id="body-measurement-log-id">
+                <div class="form-group">
+                    <label for="body-measurement-date">Data:</label>
+                    <input type="date" id="body-measurement-date" name="body-measurement-date" required>
+                </div>
+                
+                <div id="body-measurement-fields-container" class="form-grid">
+                    <!-- Measurement fields will be populated here by JS -->
+                </div>
+
+                <div class="form-group">
+                    <label for="body-measurement-notes">Notas Adicionais:</label>
+                    <textarea id="body-measurement-notes" name="body-measurement-notes" rows="3" placeholder="Ex: Medido pela manhã, após refeição..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button-primary">Salvar Medidas</button>
+                    <button type="button" id="cancel-body-measurement-modal-btn" class="button-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+:root {
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    --light-bg: #f4f7fc;
+    --light-card-bg: #ffffff;
+    --light-text: #333333;
+    --light-text-secondary: #555555;
+    --light-border: #e0e0e0;
+    --light-primary: #317EFB; /* Sober Blue */
+    --light-primary-text: #ffffff;
+    --light-accent: #2ecc71; /* Green for positive actions */
+    --light-accent-text: #ffffff;
+    --light-workout-day-highlight: #e6f0ff;
+    --light-selected-day-highlight: #cce0ff;
+    --light-modal-backdrop: rgba(0,0,0,0.4);
+    --light-danger: #e74c3c; /* Red for delete actions */
+    --light-danger-text: #ffffff;
+
+
+    --dark-bg: #121212;
+    --dark-card-bg: #1e1e1e;
+    --dark-text: #e0e0e0;
+    --dark-text-secondary: #b0b0b0;
+    --dark-border: #333333;
+    --dark-primary: #317EFB; /* Sober Blue - can be same or adjusted */
+    --dark-primary-text: #ffffff;
+    --dark-accent: #27ae60; /* Darker Green */
+    --dark-accent-text: #ffffff;
+    --dark-workout-day-highlight: #2a2f3a;
+    --dark-selected-day-highlight: #3a465d;
+    --dark-modal-backdrop: rgba(0,0,0,0.6);
+    --dark-danger: #c0392b; /* Darker Red */
+    --dark-danger-text: #ffffff;
+
+
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --border-radius: 8px;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.light {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+body.dark {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+body.light header {
+    background-color: var(--light-primary);
+    color: var(--light-primary-text);
+}
+body.dark header {
+    background-color: #1f1f1f; /* Darker header for dark mode */
+    color: var(--dark-primary-text);
+    border-bottom: 1px solid var(--dark-border);
+}
+header .logo-title {
+    display: flex;
+    align-items: center;
+}
+header .header-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+#theme-toggle {
+    background: none;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+}
+#theme-toggle .icon-sun { display: none; }
+#theme-toggle .icon-moon { display: inline; }
+body.dark #theme-toggle .icon-sun { display: inline; }
+body.dark #theme-toggle .icon-moon { display: none; }
+
+
+main {
+    flex-grow: 1;
+    padding: 1.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+body.light section {
+    background-color: var(--light-card-bg);
+    border: 1px solid var(--light-border);
+}
+body.dark section {
+    background-color: var(--dark-card-bg);
+    border: 1px solid var(--dark-border);
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    border-bottom: 2px solid;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+body.light h2 { border-color: var(--light-primary); color: var(--light-primary); }
+body.dark h2 { border-color: var(--dark-primary); color: var(--dark-primary); }
+
+.days-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted minmax for more space */
+    gap: 1rem;
+}
+
+.day-card {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes edit button down */
+}
+body.light .day-card {
+    background-color: #f9f9f9;
+    border: 1px solid var(--light-border);
+}
+body.dark .day-card {
+    background-color: #2a2a2a;
+    border: 1px solid var(--dark-border);
+}
+
+.day-card-content {
+    flex-grow: 1; /* Allows content to take up space before the button */
+    cursor: pointer; /* Make content part clickable for selection */
+}
+
+.day-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem; /* Slightly larger day name */
+}
+body.light .day-card h3 { color: var(--light-text); }
+body.dark .day-card h3 { color: var(--dark-text); }
+
+
+.day-card .day-status { /* Replaces .muscle-groups for more general status */
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem; /* Space before edit button */
+    min-height: 2.5em; /* Ensure consistent height for status text */
+}
+body.light .day-card .day-status { color: var(--light-text-secondary); }
+body.dark .day-card .day-status { color: var(--dark-text-secondary); }
+
+
+.day-card.workout-day .day-status {
+    font-weight: bold;
+}
+body.light .day-card.workout-day { background-color: var(--light-workout-day-highlight); }
+body.dark .day-card.workout-day { background-color: var(--dark-workout-day-highlight); }
+
+
+.day-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+body.light .day-card.selected {
+    background-color: var(--light-selected-day-highlight);
+    border-color: var(--light-primary);
+    box-shadow: 0 0 0 2px var(--light-primary);
+}
+body.dark .day-card.selected {
+    background-color: var(--dark-selected-day-highlight);
+    border-color: var(--dark-primary);
+    box-shadow: 0 0 0 2px var(--dark-primary);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem;
+    font-size: 1rem;
+    line-height: 1;
+    border-radius: var(--border-radius);
+}
+body.light .icon-btn { color: var(--light-text-secondary); }
+body.dark .icon-btn { color: var(--dark-text-secondary); }
+.icon-btn:hover { background-color: rgba(0,0,0,0.1); }
+body.light .icon-btn:hover { color: var(--light-primary); }
+body.dark .icon-btn:hover { color: var(--dark-primary); }
+
+.day-card-actions {
+    margin-top: auto; /* Pushes actions to the bottom if flex direction is column */
+    text-align: right;
+}
+
+
+#selected-day-info-container h4, #exercise-list-container h5 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+body.light #selected-day-info-container h4 { color: var(--light-primary); }
+body.dark #selected-day-info-container h4 { color: var(--dark-primary); }
+
+#exercise-list-container ul, #history-view ul, #body-measurements-history-container ul {
+    list-style: none;
+    padding-left: 0;
+}
+#exercise-list-container li, #history-view li, .measurement-log-item {
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
+    /* display: flex; */ /* Removed for measurement item to allow block layout */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+}
+body.light #exercise-list-container li, body.light #history-view li, body.light .measurement-log-item {
+    background-color: #f9f9f9;
+    border: 1px solid var(--light-border);
+}
+body.dark #exercise-list-container li, body.dark #history-view li, body.dark .measurement-log-item {
+    background-color: #2a2a2a;
+    border: 1px solid var(--dark-border);
+}
+
+#exercise-list-container li { /* Restore flex for exercise list items specifically */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+#history-view li ul { margin-top: 0.5rem; }
+#history-view li ul li {
+    font-size: 0.9em;
+    padding: 0.3rem 0.5rem;
+}
+body.light #history-view li ul li { background-color: #efefef; }
+body.dark #history-view li ul li { background-color: #333; }
+
+
+#exercise-list-container li .icon-btn { /* Specific for exercise list buttons if needed */
+    margin-left: 0.5rem;
+}
+
+
+.button-primary, .button-secondary, .button-accent, .button-danger {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    margin-right: 0.5rem;
+}
+.button-primary:last-child, .button-secondary:last-child, .button-accent:last-child, .button-danger:last-child {
+    margin-right: 0;
+}
+.button-primary:hover, .button-secondary:hover, .button-accent:hover, .button-danger:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+body.light .button-primary { background-color: var(--light-primary); color: var(--light-primary-text); }
+body.light .button-accent { background-color: var(--light-accent); color: var(--light-accent-text); }
+body.light .button-secondary { background-color: #cccccc; color: #333333; }
+body.light .button-danger { background-color: var(--light-danger); color: var(--light-danger-text); }
+
+body.dark .button-primary { background-color: var(--dark-primary); color: var(--dark-primary-text); }
+body.dark .button-accent { background-color: var(--dark-accent); color: var(--dark-accent-text); }
+body.dark .button-secondary { background-color: #555555; color: #eeeeee; }
+body.dark .button-danger { background-color: var(--dark-danger); color: var(--dark-danger-text); }
+
+
+.actions-container, .form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start; /* Align buttons to the start */
+}
+
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.8rem;
+    line-height: 56px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+body.light .fab { background-color: var(--light-accent); color: var(--light-accent-text); }
+body.dark .fab { background-color: var(--dark-accent); color: var(--dark-accent-text); }
+
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label, .form-group legend { /* Added legend for fieldset like muscle groups */
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+body.light .form-group label, body.light .form-group legend { color: var(--light-text-secondary); }
+body.dark .form-group label, body.dark .form-group legend { color: var(--dark-text-secondary); }
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+body.light .form-group input, body.light .form-group textarea, body.light .form-group select, body.light .form-group input[type="date"] {
+    border: 1px solid var(--light-border);
+    background-color: #fff;
+    color: var(--light-text);
+}
+body.dark .form-group input, body.dark .form-group textarea, body.dark .form-group select, body.dark .form-group input[type="date"] {
+    border: 1px solid var(--dark-border);
+    background-color: #2a2a2a;
+    color: var(--dark-text);
+}
+body.light .form-group input:focus, body.light .form-group textarea:focus, body.light .form-group select:focus, body.light .form-group input[type="date"]:focus {
+    border-color: var(--light-primary);
+    box-shadow: 0 0 0 2px var(--light-primary-text), 0 0 0 3px var(--light-primary);
+}
+body.dark .form-group input:focus, body.dark .form-group textarea:focus, body.dark .form-group select:focus, body.dark .form-group input[type="date"]:focus {
+    border-color: var(--dark-primary);
+    box-shadow: 0 0 0 2px var(--dark-card-bg), 0 0 0 3px var(--dark-primary);
+}
+.form-group select[disabled] {
+    opacity: 0.7;
+}
+
+#log-workout-form-view .log-exercise-slot {
+    padding: 1.5rem; /* More padding for slots */
+    margin-bottom: 1.5rem; /* More margin for slots */
+    border-radius: var(--border-radius);
+}
+body.light #log-workout-form-view .log-exercise-slot {
+    background-color: #f0f4f8; /* Slightly different bg for slots */
+    border: 1px solid var(--light-border);
+}
+body.dark #log-workout-form-view .log-exercise-slot {
+    background-color: #252525; /* Slightly different bg for slots */
+    border: 1px solid var(--dark-border);
+}
+
+#log-workout-form-view .log-exercise-slot h5 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+body.light #log-workout-form-view .log-exercise-slot h5 { color: var(--light-primary); }
+body.dark #log-workout-form-view .log-exercise-slot h5 { color: var(--dark-primary); }
+
+.log-exercise-slot .form-group { /* For groups within a log slot */
+   margin-bottom: 0.75rem;
+}
+
+.log-exercise-inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+    align-items: end; /* Align items to the bottom for varied input heights */
+}
+
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    z-index: 1001; /* Above FAB */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex; /* For centering modal content */
+    align-items: center;
+    justify-content: center;
+}
+body.light .modal { background-color: var(--light-modal-backdrop); }
+body.dark .modal { background-color: var(--dark-modal-backdrop); }
+
+.modal-content {
+    padding: 1.5rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 600px; /* Increased Max width for the body measurement modal */
+    max-height: 90vh; /* Max height */
+    overflow-y: auto; /* Scroll if content overflows */
+}
+body.light .modal-content { background-color: var(--light-card-bg); color: var(--light-text); }
+body.dark .modal-content { background-color: var(--dark-card-bg); color: var(--dark-text); }
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+body.light .modal-content h3 { color: var(--light-primary); }
+body.dark .modal-content h3 { color: var(--dark-primary); }
+
+#edit-day-muscle-groups-list label {
+    display: block; /* Each checkbox on a new line */
+    margin-bottom: 0.5rem;
+    font-weight: normal; /* Normal weight for checkbox labels */
+}
+#edit-day-muscle-groups-list input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+/* Body Measurements Styles */
+#body-measurements-history-container {
+    margin-top: 1.5rem;
+}
+.measurement-log-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+.measurement-log-item .log-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.measurement-log-item .log-item-header strong {
+    font-size: 1.1em;
+}
+.measurement-log-item-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem 1rem;
+    font-size: 0.9em;
+}
+.measurement-log-item-details p {
+    margin: 0.2rem 0;
+}
+body.light .measurement-log-item-details p span { color: var(--light-text-secondary); }
+body.dark .measurement-log-item-details p span { color: var(--dark-text-secondary); }
+
+.form-grid { /* For body measurement form inputs */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+/* Responsive Adjustments */
+.content-split {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Gap between sections when stacked */
+}
+
+@media (min-width: 576px) { /* Small devices (landscape phones, 576px and up) */
+    .log-exercise-inputs-grid { /* For Load, Sets, Reps fields */
+        grid-template-columns: repeat(3, 1fr); /* Always 3 columns on larger screens */
+    }
+}
+
+@media (min-width: 768px) {
+    /* .log-exercise-item .form-group - this class was removed / changed */
+     .modal-content { /* Allow slightly wider modal on tablets/desktops */
+        /* max-width: 600px;  Moved to main modal-content style */
+    }
+    .form-grid { /* Body measurement form inputs on larger screens */
+        /* grid-template-columns: repeat(2, 1fr);  --  Already using auto-fit */
+    }
+}
+
+@media (min-width: 992px) { /* For larger screens */
+    .content-split {
+        flex-direction: row; /* Side-by-side layout for details and log form */
+    }
+    .content-split > section {
+        flex: 1; /* Each section takes equal width */
+    }
+     .form-grid { /* Body measurement form inputs on even larger screens */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+/* Accessibility: Focus visibility */
+*:focus-visible {
+    outline: 2px solid var(--light-primary);
+    outline-offset: 2px;
+}
+body.dark *:focus-visible {
+    outline-color: var(--dark-primary);
+}
