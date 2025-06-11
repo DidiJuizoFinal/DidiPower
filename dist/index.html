@@ -21,6 +21,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️</text></svg>">
 
 
+<link rel="stylesheet" href="/index.css">
 <script type="importmap">
 {
   "imports": {
@@ -28,83 +29,27 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-BYj8w1HT.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BRu9fnrw.css">
+  <script type="module" crossorigin src="/assets/index-DMJMOxQn.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-IKNTCIru.css">
 </head>
 <body>
     <div id="app">
         <header>
-            <div class="logo-title">
+            <div class="logo-title" role="button" tabindex="0" aria-label="Ir para o painel principal">
                 <span role="img" aria-label="dumbbell icon" class="header-icon">🏋️</span>
                 <h1>DidiFit</h1>
             </div>
-            <button id="theme-toggle" aria-label="Alternar tema">
-                <span class="icon-moon">🌙</span>
-                <span class="icon-sun">☀️</span>
-            </button>
+            <div class="header-actions">
+                <button id="nav-measurements-btn" class="header-nav-btn" aria-label="Ver Minhas Medidas">📏 Medidas</button>
+                <button id="nav-history-btn" class="header-nav-btn" aria-label="Ver Histórico de Treinos">📜 Histórico</button>
+                <button id="theme-toggle" aria-label="Alternar tema">
+                    <span class="icon-moon">🌙</span>
+                    <span class="icon-sun">☀️</span>
+                </button>
+            </div>
         </header>
         <main>
-            <section id="schedule-view" aria-labelledby="schedule-heading">
-                <h2 id="schedule-heading">Agenda Semanal</h2>
-                <p>Configure seus dias de treino e os grupos musculares para cada um. Clique no ícone ✏️ para editar um dia.</p>
-                <div class="days-container">
-                    <!-- Days will be rendered here by JavaScript -->
-                </div>
-            </section>
-
-            <div class="content-split">
-                <section id="workout-details-view" aria-labelledby="details-heading">
-                    <h2 id="details-heading">Detalhes do Treino do Dia</h2>
-                    <div id="selected-day-info-container">
-                        <p id="selected-day-info">Selecione um dia na agenda para ver ou editar os exercícios.</p>
-                    </div>
-                    <div id="exercise-list-container">
-                        <!-- Exercise templates will be rendered here -->
-                    </div>
-                    <div class="actions-container">
-                        <button id="add-exercise-to-template-btn" class="button-primary" style="display:none;">Adicionar Exercício ao Modelo</button>
-                        <button id="log-workout-btn" class="button-accent" style="display:none;">Registrar Treino Realizado</button>
-                    </div>
-                </section>
-
-                <section id="log-workout-form-view" style="display:none;" aria-labelledby="log-form-heading">
-                    <h2 id="log-form-heading">Registrar Treino</h2>
-                    <form id="workout-log-form">
-                        <div id="log-form-exercises-container">
-                            <!-- 6 Exercise logging slots will be dynamically inserted here -->
-                        </div>
-                        <div class="form-group">
-                            <label for="workout-notes">Notas do Treino:</label>
-                            <textarea id="workout-notes" name="workout-notes" rows="3" placeholder="Ex: Senti dor no ombro, aumentar carga na próxima..."></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="button-primary">Salvar Treino</button>
-                            <button type="button" id="cancel-log-workout-btn" class="button-secondary">Cancelar</button>
-                        </div>
-                    </form>
-                </section>
-            </div>
-
-            <section id="history-view" aria-labelledby="history-heading">
-                <h2 id="history-heading">Histórico de Treinos</h2>
-                <div id="last-workouts-container">
-                    <p>Nenhum treino registrado ainda.</p>
-                </div>
-                <!-- Placeholder for evolution chart -->
-                <div id="evolution-chart-container" style="display: none;">
-                    <h3>Evolução da Carga (Em breve)</h3>
-                </div>
-            </section>
-
-            <section id="body-measurements-view" aria-labelledby="body-measurements-heading">
-                <h2 id="body-measurements-heading">Minhas Medidas</h2>
-                <div class="actions-container">
-                    <button id="add-body-measurement-btn" class="button-primary">Registrar Novas Medidas</button>
-                </div>
-                <div id="body-measurements-history-container">
-                    <p>Nenhuma medida corporal registrada ainda.</p>
-                </div>
-            </section>
+            <!-- Content will be dynamically rendered here by JavaScript -->
         </main>
         <button id="fab-add-workout" class="fab" aria-label="Registrar Treino para Hoje" title="Registrar Treino para Hoje">
             <span role="img" aria-hidden="true">+</span>
